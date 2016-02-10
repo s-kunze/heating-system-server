@@ -1,8 +1,11 @@
-package de.kunze;
+package de.kunze.heating.server;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import de.kunze.heating.server.Application;
+
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
