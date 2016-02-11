@@ -135,7 +135,7 @@
 				<version>0.4.0</version>
 				<configuration>
 					<imageName>heating-server</imageName>
-					<baseImage>java8</baseImage>
+					<baseImage>java:8</baseImage>
 <!-- 					<dockerDirectory>docker</dockerDirectory> -->
 					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
 					<!-- copy the service's jar file from target into the root directory 
