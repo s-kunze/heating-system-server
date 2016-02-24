@@ -141,7 +141,7 @@
 				<configuration>
 					<serverId>docker-kunze-hub</serverId>
 					<registryUrl>https://docker.kunze.de/v2/</registryUrl>
-					<imageName>${project.artifactId}</imageName>
+					<imageName>docker.kunze.de:443/${project.artifactId}</imageName>
 					<baseImage>java:8</baseImage>
 					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
 					<pushImage>true</pushImage>
@@ -151,17 +151,6 @@
 							<goals>
 								<goal>build</goal>
 							</goals>
-						</execution>
-						<execution>
-							<id>tag-image</id>
-							<phase>package</phase>
-							<goals>
-								<goal>tag</goal>
-							</goals>
-							<configuration>
-								<image>${project.artifactId}</image>
-								<newName>docker.kunze.de:443/${project.artifactId}</newName>
-							</configuration>
 						</execution>
 					</executions>
 				</configuration>
