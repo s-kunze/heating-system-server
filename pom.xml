@@ -140,8 +140,8 @@
 				<version>0.4.0</version>
 				<configuration>
 					<serverId>docker-kunze-hub</serverId>
-      				<registryUrl>https://docker.kunze.de/v2/</registryUrl>
-					<imageName>docker.kunze.de:443/kunze/${project.artifactId}:${project.version}</imageName>
+					<registryUrl>https://docker.kunze.de/v2/</registryUrl>
+					<imageName>${project.artifactId}</imageName>
 					<baseImage>java:8</baseImage>
 					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
 					<pushImage>true</pushImage>
@@ -152,18 +152,29 @@
 								<goal>build</goal>
 							</goals>
 						</execution>
+						<execution>
+							<id>tag-image</id>
+							<phase>package</phase>
+							<goals>
+								<goal>tag</goal>
+							</goals>
+							<configuration>
+								<image>${project.artifactId}</image>
+								<newName>docker.kunze.de:443/${project.artifactId}</newName>
+							</configuration>
+						</execution>
 					</executions>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
-<!-- 	<servers> -->
-<!--   <server> -->
-<!--     <id>docker-kunze-hub</id> -->
-<!--     <username>skunze</username> -->
-<!--     <password>hughes</password> -->
-<!--   </server> -->
-<!-- </servers> -->
+	<!-- <servers> -->
+	<!-- <server> -->
+	<!-- <id>docker-kunze-hub</id> -->
+	<!-- <username>skunze</username> -->
+	<!-- <password>hughes</password> -->
+	<!-- </server> -->
+	<!-- </servers> -->
 
 </project>
