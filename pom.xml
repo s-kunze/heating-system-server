@@ -135,17 +135,17 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <executions>
-                    <execution>
-                    	<phase>initialize</phase>
-                        <goals>
-                            <goal>revision</goal>
-                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
@@ -156,6 +156,13 @@
 					<imageName>docker.kunze.de:443/${project.artifactId}:${git.commit.id.abbrev}</imageName>
 					<baseImage>hypriot/rpi-java:1.8.0</baseImage>
 					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
 					<pushImage>true</pushImage>
 					<executions>
 						<execution>
