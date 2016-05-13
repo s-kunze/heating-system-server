@@ -6,14 +6,14 @@ import de.kunze.heating.server.transfer.RelaisTransfer;
 
 public interface RelaisService {
 
-    List<RelaisTransfer> getRelaiss();
+	List<RelaisTransfer> getRelaiss();
 
-    RelaisTransfer getRelais(Long relaisId);
+	RelaisTransfer getRelais(Long relaisId);
 
-    RelaisTransfer updateRelais(Long relaisId, RelaisTransfer relaisTransfer);
+	RelaisTransfer updateRelais(Long relaisId, RelaisTransfer relaisTransfer);
 
-    RelaisTransfer on(Long relaisId);
+	RelaisTransfer on(Long relaisId);
 
-    RelaisTransfer off(Long relaisId);
+	RelaisTransfer off(Long relaisId);
 
 }

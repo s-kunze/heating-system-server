@@ -11,45 +11,45 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(Include.NON_NULL)
 public class TemperaturSensorTransfer extends ResourceSupport {
 
-    @JsonProperty
-    private Long temperaturSensor;
-    @JsonProperty
-    private String name;
-    @JsonProperty
-    private String temperaturSensorId;
-    @JsonProperty
-    private Integer temperatur;
+	@JsonProperty
+	private Long temperaturSensor;
+	@JsonProperty
+	private String name;
+	@JsonProperty
+	private String temperaturSensorId;
+	@JsonProperty
+	private Integer temperatur;
 
-    public Long getTemperaturSensor() {
-	return temperaturSensor;
-    }
+	public Long getTemperaturSensor() {
+		return temperaturSensor;
+	}
 
-    public void setTemperaturSensor(Long temperaturSensor) {
-	this.temperaturSensor = temperaturSensor;
-    }
+	public void setTemperaturSensor(Long temperaturSensor) {
+		this.temperaturSensor = temperaturSensor;
+	}
 
-    public String getName() {
-	return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-	this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getTemperaturSensorId() {
-	return temperaturSensorId;
-    }
+	public String getTemperaturSensorId() {
+		return temperaturSensorId;
+	}
 
-    public void setTemperaturSensorId(String temperaturSensorId) {
-	this.temperaturSensorId = temperaturSensorId;
-    }
+	public void setTemperaturSensorId(String temperaturSensorId) {
+		this.temperaturSensorId = temperaturSensorId;
+	}
 
-    public Integer getTemperatur() {
-	return temperatur;
-    }
+	public Integer getTemperatur() {
+		return temperatur;
+	}
 
-    public void setTemperatur(Integer temperatur) {
-	this.temperatur = temperatur;
-    }
+	public void setTemperatur(Integer temperatur) {
+		this.temperatur = temperatur;
+	}
 
 }

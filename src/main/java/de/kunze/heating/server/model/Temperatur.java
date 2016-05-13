@@ -22,16 +22,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Temperatur {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private Double temperatur;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	private Double temperatur;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created = new Date();
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created = new Date();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "temperaturSensorId")
-    private TemperaturSensor temperaturSensor;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "temperaturSensorId")
+	private TemperaturSensor temperaturSensor;
 
 }

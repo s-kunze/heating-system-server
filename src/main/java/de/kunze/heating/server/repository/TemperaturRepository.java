@@ -11,6 +11,6 @@ import de.kunze.heating.server.model.TemperaturSensor;
 @Repository
 public interface TemperaturRepository extends JpaRepository<Temperatur, Long> {
 
-    List<Temperatur> findByTemperaturSensorOrderByCreatedDesc(TemperaturSensor temperaturSensor);
+	List<Temperatur> findByTemperaturSensorOrderByCreatedDesc(TemperaturSensor temperaturSensor);
 
 }

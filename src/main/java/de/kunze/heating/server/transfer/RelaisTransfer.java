@@ -11,47 +11,47 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(Include.NON_NULL)
 public class RelaisTransfer extends ResourceSupport {
 
-    @JsonProperty
-    private Long relaisId;
+	@JsonProperty
+	private Long relaisId;
 
-    @JsonProperty
-    private String name;
+	@JsonProperty
+	private String name;
 
-    @JsonProperty
-    private StatusTransfer status;
+	@JsonProperty
+	private StatusTransfer status;
 
-    public RelaisTransfer() {
+	public RelaisTransfer() {
 
-    }
+	}
 
-    public RelaisTransfer(Long relaisId, String name, StatusTransfer status) {
-	this.relaisId = relaisId;
-	this.name = name;
-	this.status = status;
-    }
+	public RelaisTransfer(Long relaisId, String name, StatusTransfer status) {
+		this.relaisId = relaisId;
+		this.name = name;
+		this.status = status;
+	}
 
-    public Long getRelaisId() {
-	return relaisId;
-    }
+	public Long getRelaisId() {
+		return relaisId;
+	}
 
-    public void setRelaisId(Long relaisId) {
-	this.relaisId = relaisId;
-    }
+	public void setRelaisId(Long relaisId) {
+		this.relaisId = relaisId;
+	}
 
-    public String getName() {
-	return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-	this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public StatusTransfer getStatus() {
-	return status;
-    }
+	public StatusTransfer getStatus() {
+		return status;
+	}
 
-    public void setStatus(StatusTransfer status) {
-	this.status = status;
-    }
+	public void setStatus(StatusTransfer status) {
+		this.status = status;
+	}
 
 }

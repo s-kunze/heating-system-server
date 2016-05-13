@@ -6,11 +6,11 @@ import de.kunze.heating.server.transfer.TemperaturSensorTransfer;
 
 public interface TemperaturSensorService {
 
-    List<TemperaturSensorTransfer> getTemperaturSensor();
+	List<TemperaturSensorTransfer> getTemperaturSensor();
 
-    TemperaturSensorTransfer getTemperaturSensor(Long temperaturSensorId);
+	TemperaturSensorTransfer getTemperaturSensor(Long temperaturSensorId);
 
-    TemperaturSensorTransfer updateTemperaturSensor(Long temperaturSensorId,
-	    TemperaturSensorTransfer temperaturSensorTransfer);
+	TemperaturSensorTransfer updateTemperaturSensor(Long temperaturSensorId,
+			TemperaturSensorTransfer temperaturSensorTransfer);
 
 }

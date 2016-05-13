@@ -16,23 +16,23 @@ import de.kunze.heating.server.transfer.TemperaturSensorTransfer;
 @RequestMapping("/v1/temperatursensor")
 public class TemperaturSensorResource {
 
-    @Autowired
-    private TemperaturSensorService temperaturSensorService;
+	@Autowired
+	private TemperaturSensorService temperaturSensorService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "")
-    public List<TemperaturSensorTransfer> getTemperaturSensors() {
-	return temperaturSensorService.getTemperaturSensor();
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "")
+	public List<TemperaturSensorTransfer> getTemperaturSensors() {
+		return temperaturSensorService.getTemperaturSensor();
+	}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{temperaturSensorId}")
-    public TemperaturSensorTransfer getTemperaturSensor(@PathVariable Long temperaturSensorId) {
-	return temperaturSensorService.getTemperaturSensor(temperaturSensorId);
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/{temperaturSensorId}")
+	public TemperaturSensorTransfer getTemperaturSensor(@PathVariable Long temperaturSensorId) {
+		return temperaturSensorService.getTemperaturSensor(temperaturSensorId);
+	}
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/{temperaturSensorId}")
-    public TemperaturSensorTransfer updateTemperaturSensor(@PathVariable Long temperaturSensorId,
-	    @RequestBody TemperaturSensorTransfer temperaturSensorTransfer) {
-	return temperaturSensorService.updateTemperaturSensor(temperaturSensorId, temperaturSensorTransfer);
-    }
+	@RequestMapping(method = RequestMethod.PUT, value = "/{temperaturSensorId}")
+	public TemperaturSensorTransfer updateTemperaturSensor(@PathVariable Long temperaturSensorId,
+			@RequestBody TemperaturSensorTransfer temperaturSensorTransfer) {
+		return temperaturSensorService.updateTemperaturSensor(temperaturSensorId, temperaturSensorTransfer);
+	}
 
 }

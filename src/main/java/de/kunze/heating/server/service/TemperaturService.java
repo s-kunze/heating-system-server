@@ -6,6 +6,6 @@ import de.kunze.heating.server.transfer.TemperaturTransfer;
 
 public interface TemperaturService {
 
-    List<TemperaturTransfer> getTemperatur(Long temperaturId);
+	List<TemperaturTransfer> getTemperatur(Long temperaturId);
 
 }

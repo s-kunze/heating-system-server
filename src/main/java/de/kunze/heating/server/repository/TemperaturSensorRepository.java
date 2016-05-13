@@ -10,6 +10,6 @@ import de.kunze.heating.server.model.TemperaturSensor;
 @Repository
 public interface TemperaturSensorRepository extends JpaRepository<TemperaturSensor, Long> {
 
-    Optional<TemperaturSensor> findByTemperaturSensorId(String temperaturSensorId);
+	Optional<TemperaturSensor> findByTemperaturSensorId(String temperaturSensorId);
 
 }

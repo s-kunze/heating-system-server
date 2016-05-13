@@ -11,48 +11,48 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(Include.NON_NULL)
 public class TemperaturTransfer extends ResourceSupport {
 
-    @JsonProperty
-    private Long temperaturId;
+	@JsonProperty
+	private Long temperaturId;
 
-    @JsonProperty
-    private Double temperatur;
+	@JsonProperty
+	private Double temperatur;
 
-    @JsonProperty
-    private TemperaturSensorTransfer temperaturSensorTransfer;
+	@JsonProperty
+	private TemperaturSensorTransfer temperaturSensorTransfer;
 
-    @JsonProperty
-    private Long created;
+	@JsonProperty
+	private Long created;
 
-    public Long getTemperaturId() {
-	return temperaturId;
-    }
+	public Long getTemperaturId() {
+		return temperaturId;
+	}
 
-    public void setTemperaturId(Long temperaturId) {
-	this.temperaturId = temperaturId;
-    }
+	public void setTemperaturId(Long temperaturId) {
+		this.temperaturId = temperaturId;
+	}
 
-    public Double getTemperatur() {
-	return temperatur;
-    }
+	public Double getTemperatur() {
+		return temperatur;
+	}
 
-    public void setTemperatur(Double temperatur) {
-	this.temperatur = temperatur;
-    }
+	public void setTemperatur(Double temperatur) {
+		this.temperatur = temperatur;
+	}
 
-    public TemperaturSensorTransfer getTemperaturSensorTransfer() {
-	return temperaturSensorTransfer;
-    }
+	public TemperaturSensorTransfer getTemperaturSensorTransfer() {
+		return temperaturSensorTransfer;
+	}
 
-    public void setTemperaturSensorTransfer(TemperaturSensorTransfer temperaturSensorTransfer) {
-	this.temperaturSensorTransfer = temperaturSensorTransfer;
-    }
+	public void setTemperaturSensorTransfer(TemperaturSensorTransfer temperaturSensorTransfer) {
+		this.temperaturSensorTransfer = temperaturSensorTransfer;
+	}
 
-    public Long getCreated() {
-	return created;
-    }
+	public Long getCreated() {
+		return created;
+	}
 
-    public void setCreated(Long created) {
-	this.created = created;
-    }
+	public void setCreated(Long created) {
+		this.created = created;
+	}
 
 }
