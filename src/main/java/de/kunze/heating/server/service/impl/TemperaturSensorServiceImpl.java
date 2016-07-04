@@ -25,7 +25,9 @@ import de.kunze.heating.server.model.TemperaturSensor;
 import de.kunze.heating.server.repository.TemperaturRepository;
 import de.kunze.heating.server.repository.TemperaturSensorRepository;
 import de.kunze.heating.server.service.TemperaturSensorService;
+import de.kunze.heating.server.service.TemperaturService;
 import de.kunze.heating.server.transfer.TemperaturSensorTransfer;
+import de.kunze.heating.server.transfer.TemperaturTransfer;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +39,9 @@ public class TemperaturSensorServiceImpl
     @Autowired
     private TemperaturSensorRepository temperaturSensorRepository;
 
+    @Autowired
+    private TemperaturService temperaturService;
+    
     @Autowired
     private TemperaturRepository temperaturRepository;
 
@@ -146,8 +151,13 @@ public class TemperaturSensorServiceImpl
     private TemperaturSensorTransfer transform(TemperaturSensor temperaturSensor) {
 	val result = new TemperaturSensorTransfer();
 
+	List<TemperaturTransfer> temperaturTransfer = temperaturService.getTemperatur(temperaturSensor.getId());
+	
+	int actualTemp = new Double(temperaturTransfer.get(0).getTemperatur() * 1000.0d).intValue();
+	
 	result.setTemperaturSensor(temperaturSensor.getId());
 	result.setName(temperaturSensor.getName());
+	result.setTemperatur(actualTemp);
 
 	return result;
     }
