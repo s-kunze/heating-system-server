@@ -34,143 +34,143 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class TemperaturSensorServiceImpl
-	implements TemperaturSensorService, ApplicationListener<ContextRefreshedEvent> {
+		implements TemperaturSensorService, ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
-    private TemperaturSensorRepository temperaturSensorRepository;
+	@Autowired
+	private TemperaturSensorRepository temperaturSensorRepository;
 
-    @Autowired
-    private TemperaturService temperaturService;
-    
-    @Autowired
-    private TemperaturRepository temperaturRepository;
+	@Autowired
+	private TemperaturService temperaturService;
 
-    @Value("${heatingsystemhost.url}")
-    private String heatingSystemHostUrl;
+	@Autowired
+	private TemperaturRepository temperaturRepository;
 
-    @Value("${heatingsystemhost.username}")
-    private String username;
+	@Value("${heatingsystemhost.url}")
+	private String heatingSystemHostUrl;
 
-    @Value("${heatingsystemhost.password}")
-    private String password;
+	@Value("${heatingsystemhost.username}")
+	private String username;
 
-    private RestTemplate heatingSystemHost = new RestTemplate();
+	@Value("${heatingsystemhost.password}")
+	private String password;
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-	log.info("Get actual temperatursensors from host");
-	HttpEntity<String> request = new HttpEntity<String>(createAuth());
-	ResponseEntity<List<TemperaturSensorTransfer>> responseEntity = heatingSystemHost.exchange(
-		heatingSystemHostUrl + "temperatursensor", HttpMethod.GET, request,
-		new ParameterizedTypeReference<List<TemperaturSensorTransfer>>() {
-		});
+	private RestTemplate heatingSystemHost = new RestTemplate();
 
-	if (HttpStatus.OK == responseEntity.getStatusCode()) {
-	    List<TemperaturSensorTransfer> temperaturSensorTransfers = responseEntity.getBody();
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		log.info("Get actual temperatursensors from host");
+		HttpEntity<String> request = new HttpEntity<String>(createAuth());
+		ResponseEntity<List<TemperaturSensorTransfer>> responseEntity = heatingSystemHost.exchange(
+				heatingSystemHostUrl + "temperatursensor", HttpMethod.GET, request,
+				new ParameterizedTypeReference<List<TemperaturSensorTransfer>>() {
+				});
 
-	    for (TemperaturSensorTransfer temperaturSensorTransfer : temperaturSensorTransfers) {
-		Optional<TemperaturSensor> temperaturSensor = temperaturSensorRepository
-			.findByTemperaturSensorId(temperaturSensorTransfer.getTemperaturSensorId());
+		if (HttpStatus.OK == responseEntity.getStatusCode()) {
+			List<TemperaturSensorTransfer> temperaturSensorTransfers = responseEntity.getBody();
 
-		if (!temperaturSensor.isPresent()) {
-		    log.info("Don't have {}", temperaturSensorTransfer.getTemperaturSensorId());
-		    TemperaturSensor sensor = new TemperaturSensor();
-		    sensor.setTemperaturSensorId(temperaturSensorTransfer.getTemperaturSensorId());
+			for (TemperaturSensorTransfer temperaturSensorTransfer : temperaturSensorTransfers) {
+				Optional<TemperaturSensor> temperaturSensor = temperaturSensorRepository
+						.findByTemperaturSensorId(temperaturSensorTransfer.getTemperaturSensorId());
 
-		    temperaturSensorRepository.save(sensor);
+				if (!temperaturSensor.isPresent()) {
+					log.info("Don't have {}", temperaturSensorTransfer.getTemperaturSensorId());
+					TemperaturSensor sensor = new TemperaturSensor();
+					sensor.setTemperaturSensorId(temperaturSensorTransfer.getTemperaturSensorId());
+
+					temperaturSensorRepository.save(sensor);
+				}
+			}
 		}
-	    }
-	}
-    }
-
-    @Override
-    public List<TemperaturSensorTransfer> getTemperaturSensor() {
-	List<TemperaturSensor> temperaturSensors = temperaturSensorRepository.findAll();
-
-	if (temperaturSensors != null) {
-	    return temperaturSensors.stream().map(t -> transform(t)).collect(Collectors.toList());
 	}
 
-	return new ArrayList<>();
-    }
+	@Override
+	public List<TemperaturSensorTransfer> getTemperaturSensor() {
+		List<TemperaturSensor> temperaturSensors = temperaturSensorRepository.findAll();
 
-    @Override
-    public TemperaturSensorTransfer getTemperaturSensor(Long temperaturSensorId) {
-	TemperaturSensor temperaturSensor = temperaturSensorRepository.findOne(temperaturSensorId);
+		if (temperaturSensors != null) {
+			return temperaturSensors.stream().map(t -> transform(t)).collect(Collectors.toList());
+		}
 
-	if (temperaturSensor != null) {
-	    return transform(temperaturSensor);
+		return new ArrayList<>();
 	}
 
-	return null;
-    }
+	@Override
+	public TemperaturSensorTransfer getTemperaturSensor(Long temperaturSensorId) {
+		TemperaturSensor temperaturSensor = temperaturSensorRepository.findOne(temperaturSensorId);
 
-    @Override
-    public TemperaturSensorTransfer updateTemperaturSensor(Long temperaturSensorId,
-	    TemperaturSensorTransfer temperaturSensorTransfer) {
-	TemperaturSensor temperaturSensor = temperaturSensorRepository.findOne(temperaturSensorId);
+		if (temperaturSensor != null) {
+			return transform(temperaturSensor);
+		}
 
-	if (temperaturSensor != null) {
-	    temperaturSensor.setName(temperaturSensorTransfer.getName());
-
-	    temperaturSensorRepository.save(temperaturSensor);
-
-	    return transform(temperaturSensor);
+		return null;
 	}
 
-	return null;
-    }
+	@Override
+	public TemperaturSensorTransfer updateTemperaturSensor(Long temperaturSensorId,
+			TemperaturSensorTransfer temperaturSensorTransfer) {
+		TemperaturSensor temperaturSensor = temperaturSensorRepository.findOne(temperaturSensorId);
 
-    @Scheduled(fixedRate = 120000, initialDelay = 1000)
-    public void updateTemperatures() {
-	log.info("Update temperatures");
-	List<TemperaturSensor> temperaturSensors = temperaturSensorRepository.findAll();
+		if (temperaturSensor != null) {
+			temperaturSensor.setName(temperaturSensorTransfer.getName());
 
-	temperaturSensors.forEach(t -> {
-	    log.info("Get Temperatur for {}", t.getId());
-	    HttpEntity<String> request = new HttpEntity<String>(createAuth());
-	    ResponseEntity<TemperaturSensorTransfer> responseEntity = heatingSystemHost.exchange(
-		    heatingSystemHostUrl + "temperatursensor/" + t.getTemperaturSensorId(), HttpMethod.GET, request,
-		    TemperaturSensorTransfer.class);
+			temperaturSensorRepository.save(temperaturSensor);
 
-	    if (HttpStatus.OK == responseEntity.getStatusCode()) {
-		TemperaturSensorTransfer temperaturSensorTransfer = responseEntity.getBody();
+			return transform(temperaturSensor);
+		}
 
-		Temperatur temperatur = new Temperatur();
+		return null;
+	}
 
-		temperatur.setTemperatur(temperaturSensorTransfer.getTemperatur() / 1000.0d);
+	@Scheduled(fixedRate = 120000, initialDelay = 1000)
+	public void updateTemperatures() {
+		log.info("Update temperatures");
+		List<TemperaturSensor> temperaturSensors = temperaturSensorRepository.findAll();
 
-		log.info("Save {}°C for {}", temperatur.getTemperatur(), t.getId());
-		temperatur = temperaturRepository.save(temperatur);
-		temperatur.setTemperaturSensor(t);
-		temperatur = temperaturRepository.save(temperatur);
-	    }
-	});
-    }
+		temperaturSensors.forEach(t -> {
+			log.info("Get Temperatur for {}", t.getId());
+			HttpEntity<String> request = new HttpEntity<String>(createAuth());
+			ResponseEntity<TemperaturSensorTransfer> responseEntity = heatingSystemHost.exchange(
+					heatingSystemHostUrl + "temperatursensor/" + t.getTemperaturSensorId(), HttpMethod.GET, request,
+					TemperaturSensorTransfer.class);
 
-    private TemperaturSensorTransfer transform(TemperaturSensor temperaturSensor) {
-	val result = new TemperaturSensorTransfer();
+			if (HttpStatus.OK == responseEntity.getStatusCode()) {
+				TemperaturSensorTransfer temperaturSensorTransfer = responseEntity.getBody();
 
-	List<TemperaturTransfer> temperaturTransfer = temperaturService.getTemperatur(temperaturSensor.getId());
-	
-	int actualTemp = new Double(temperaturTransfer.get(0).getTemperatur() * 1000.0d).intValue();
-	
-	result.setTemperaturSensor(temperaturSensor.getId());
-	result.setName(temperaturSensor.getName());
-	result.setTemperatur(actualTemp);
+				Temperatur temperatur = new Temperatur();
 
-	return result;
-    }
+				temperatur.setTemperatur(temperaturSensorTransfer.getTemperatur() / 1000.0d);
 
-    private HttpHeaders createAuth() {
-	String plainCreds = username + ":" + password;
-	byte[] plainCredsBytes = plainCreds.getBytes();
-	byte[] base64CredsBytes = Base64.encode(plainCredsBytes);
-	String base64Creds = new String(base64CredsBytes);
+				log.info("Save {}°C for {}", temperatur.getTemperatur(), t.getId());
+				temperatur = temperaturRepository.save(temperatur);
+				temperatur.setTemperaturSensor(t);
+				temperatur = temperaturRepository.save(temperatur);
+			}
+		});
+	}
 
-	HttpHeaders headers = new HttpHeaders();
-	headers.add("Authorization", "Basic " + base64Creds);
-	return headers;
-    }
+	private TemperaturSensorTransfer transform(TemperaturSensor temperaturSensor) {
+		val result = new TemperaturSensorTransfer();
+
+		List<TemperaturTransfer> temperaturTransfer = temperaturService.getTemperatur(temperaturSensor.getId());
+
+		int actualTemp = new Double(temperaturTransfer.get(0).getTemperatur() * 1000.0d).intValue();
+
+		result.setTemperaturSensor(temperaturSensor.getId());
+		result.setName(temperaturSensor.getName());
+		result.setTemperatur(actualTemp);
+
+		return result;
+	}
+
+	private HttpHeaders createAuth() {
+		String plainCreds = username + ":" + password;
+		byte[] plainCredsBytes = plainCreds.getBytes();
+		byte[] base64CredsBytes = Base64.encode(plainCredsBytes);
+		String base64Creds = new String(base64CredsBytes);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + base64Creds);
+		return headers;
+	}
 
 }

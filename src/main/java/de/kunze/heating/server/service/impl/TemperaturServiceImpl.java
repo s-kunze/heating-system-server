@@ -19,40 +19,40 @@ import lombok.val;
 @Service
 public class TemperaturServiceImpl implements TemperaturService {
 
-    @Autowired
-    private TemperaturSensorRepository temperaturSensorRepository;
+	@Autowired
+	private TemperaturSensorRepository temperaturSensorRepository;
 
-    @Autowired
-    private TemperaturRepository temperaturRepository;
+	@Autowired
+	private TemperaturRepository temperaturRepository;
 
-    @Override
-    public List<TemperaturTransfer> getTemperatur(Long temperaturId) {
-	TemperaturSensor temperaturSensor = temperaturSensorRepository.findOne(temperaturId);
+	@Override
+	public List<TemperaturTransfer> getTemperatur(Long temperaturId) {
+		TemperaturSensor temperaturSensor = temperaturSensorRepository.findOne(temperaturId);
 
-	if (temperaturSensor != null) {
-	    List<Temperatur> temperatures = temperaturRepository
-		    .findByTemperaturSensorOrderByCreatedDesc(temperaturSensor);
+		if (temperaturSensor != null) {
+			List<Temperatur> temperatures = temperaturRepository
+					.findByTemperaturSensorOrderByCreatedDesc(temperaturSensor);
 
-	    if (temperatures != null) {
-		return temperatures.stream().map(t -> transform(t)).collect(Collectors.toList());
-	    }
+			if (temperatures != null) {
+				return temperatures.stream().map(t -> transform(t)).collect(Collectors.toList());
+			}
+		}
+
+		return new ArrayList<>();
 	}
 
-	return new ArrayList<>();
-    }
+	private TemperaturTransfer transform(Temperatur t) {
+		val temperaturSensorTransfer = new TemperaturSensorTransfer();
+		temperaturSensorTransfer.setName(t.getTemperaturSensor().getName());
 
-    private TemperaturTransfer transform(Temperatur t) {
-	val temperaturSensorTransfer = new TemperaturSensorTransfer();
-	temperaturSensorTransfer.setName(t.getTemperaturSensor().getName());
+		val result = new TemperaturTransfer();
 
-	val result = new TemperaturTransfer();
+		result.setCreated(t.getCreated().getTime());
+		result.setTemperatur(t.getTemperatur());
+		result.setTemperaturId(t.getId());
+		result.setTemperaturSensorTransfer(temperaturSensorTransfer);
 
-	result.setCreated(t.getCreated().getTime());
-	result.setTemperatur(t.getTemperatur());
-	result.setTemperaturId(t.getId());
-	result.setTemperaturSensorTransfer(temperaturSensorTransfer);
-
-	return result;
-    }
+		return result;
+	}
 
 }

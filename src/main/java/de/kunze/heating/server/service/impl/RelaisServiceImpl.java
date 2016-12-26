@@ -28,134 +28,134 @@ import de.kunze.heating.server.transfer.StatusTransfer;
 @Service
 public class RelaisServiceImpl implements RelaisService, ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
-    private RelaisRepository relaisRepository;
+	@Autowired
+	private RelaisRepository relaisRepository;
 
-    @Value("${heatingsystemhost.url}")
-    private String heatingSystemHostUrl;
+	@Value("${heatingsystemhost.url}")
+	private String heatingSystemHostUrl;
 
-    @Value("${heatingsystemhost.username}")
-    private String username;
+	@Value("${heatingsystemhost.username}")
+	private String username;
 
-    @Value("${heatingsystemhost.password}")
-    private String password;
+	@Value("${heatingsystemhost.password}")
+	private String password;
 
-    private RestTemplate heatingSystemHost = new RestTemplate();
+	private RestTemplate heatingSystemHost = new RestTemplate();
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-	HttpEntity<String> request = new HttpEntity<String>(createAuth());
-	ResponseEntity<List<RelaisTransfer>> responseEntity = heatingSystemHost.exchange(
-		heatingSystemHostUrl + "relais", HttpMethod.GET, request,
-		new ParameterizedTypeReference<List<RelaisTransfer>>() {
-		});
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		HttpEntity<String> request = new HttpEntity<String>(createAuth());
+		ResponseEntity<List<RelaisTransfer>> responseEntity = heatingSystemHost.exchange(
+				heatingSystemHostUrl + "relais", HttpMethod.GET, request,
+				new ParameterizedTypeReference<List<RelaisTransfer>>() {
+				});
 
-	if (HttpStatus.OK == responseEntity.getStatusCode()) {
-	    List<RelaisTransfer> relaisTransfers = responseEntity.getBody();
+		if (HttpStatus.OK == responseEntity.getStatusCode()) {
+			List<RelaisTransfer> relaisTransfers = responseEntity.getBody();
 
-	    for (RelaisTransfer relaisTransfer : relaisTransfers) {
-		Relais relais = relaisRepository.findOne(relaisTransfer.getRelaisId());
+			for (RelaisTransfer relaisTransfer : relaisTransfers) {
+				Relais relais = relaisRepository.findOne(relaisTransfer.getRelaisId());
 
-		if (relais == null) {
-		    relaisRepository.save(new Relais(relaisTransfer.getRelaisId(), null,
-			    Status.valueOf(relaisTransfer.getStatus().name())));
-		} else {
-		    relais.setStatus(Status.valueOf(relaisTransfer.getStatus().name()));
-		    relaisRepository.save(relais);
+				if (relais == null) {
+					relaisRepository.save(new Relais(relaisTransfer.getRelaisId(), null,
+							Status.valueOf(relaisTransfer.getStatus().name())));
+				} else {
+					relais.setStatus(Status.valueOf(relaisTransfer.getStatus().name()));
+					relaisRepository.save(relais);
+				}
+			}
 		}
-	    }
-	}
-    }
-
-    @Override
-    public List<RelaisTransfer> getRelaiss() {
-	return transform(relaisRepository.findAll());
-    }
-
-    @Override
-    public RelaisTransfer getRelais(Long relaisId) {
-	Relais relais = relaisRepository.findOne(relaisId);
-
-	if (relais != null) {
-	    return transform(relais);
 	}
 
-	return null;
-    }
-
-    @Override
-    public RelaisTransfer updateRelais(Long relaisId, RelaisTransfer relaisTransfer) {
-	Relais relais = relaisRepository.findOne(relaisId);
-
-	if (relais != null) {
-	    relais.setName(relaisTransfer.getName());
-	    return transform(relais);
+	@Override
+	public List<RelaisTransfer> getRelaiss() {
+		return transform(relaisRepository.findAll());
 	}
 
-	return null;
-    }
+	@Override
+	public RelaisTransfer getRelais(Long relaisId) {
+		Relais relais = relaisRepository.findOne(relaisId);
 
-    @Override
-    public RelaisTransfer on(Long relaisId) {
-	Relais relais = relaisRepository.findOne(relaisId);
+		if (relais != null) {
+			return transform(relais);
+		}
 
-	if (relais != null) {
-	    HttpEntity<String> request = new HttpEntity<String>(createAuth());
-	    ResponseEntity<Object> responseEntity = heatingSystemHost.exchange(
-		    heatingSystemHostUrl + "relais/" + relaisId + "/on", HttpMethod.POST, request, Object.class);
-
-	    if (HttpStatus.OK == responseEntity.getStatusCode()) {
-		relais.setStatus(Status.ON);
-
-		relais = relaisRepository.save(relais);
-		return transform(relais);
-	    }
+		return null;
 	}
 
-	return null;
-    }
+	@Override
+	public RelaisTransfer updateRelais(Long relaisId, RelaisTransfer relaisTransfer) {
+		Relais relais = relaisRepository.findOne(relaisId);
 
-    @Override
-    public RelaisTransfer off(Long relaisId) {
-	Relais relais = relaisRepository.findOne(relaisId);
+		if (relais != null) {
+			relais.setName(relaisTransfer.getName());
+			return transform(relais);
+		}
 
-	if (relais != null) {
-	    HttpEntity<String> request = new HttpEntity<String>(createAuth());
-	    ResponseEntity<Object> responseEntity = heatingSystemHost.exchange(
-		    heatingSystemHostUrl + "relais/" + relaisId + "/off", HttpMethod.POST, request, Object.class);
-
-	    if (HttpStatus.OK == responseEntity.getStatusCode()) {
-		relais.setStatus(Status.OFF);
-
-		relais = relaisRepository.save(relais);
-		return transform(relais);
-	    }
+		return null;
 	}
 
-	return null;
-    }
+	@Override
+	public RelaisTransfer on(Long relaisId) {
+		Relais relais = relaisRepository.findOne(relaisId);
 
-    private HttpHeaders createAuth() {
-	String plainCreds = username + ":" + password;
-	byte[] plainCredsBytes = plainCreds.getBytes();
-	byte[] base64CredsBytes = Base64.encode(plainCredsBytes);
-	String base64Creds = new String(base64CredsBytes);
+		if (relais != null) {
+			HttpEntity<String> request = new HttpEntity<String>(createAuth());
+			ResponseEntity<Object> responseEntity = heatingSystemHost.exchange(
+					heatingSystemHostUrl + "relais/" + relaisId + "/on", HttpMethod.POST, request, Object.class);
 
-	HttpHeaders headers = new HttpHeaders();
-	headers.add("Authorization", "Basic " + base64Creds);
-	return headers;
-    }
+			if (HttpStatus.OK == responseEntity.getStatusCode()) {
+				relais.setStatus(Status.ON);
 
-    private List<RelaisTransfer> transform(List<Relais> relais) {
-	if (relais != null) {
-	    return relais.stream().map(r -> transform(r)).collect(Collectors.toList());
+				relais = relaisRepository.save(relais);
+				return transform(relais);
+			}
+		}
+
+		return null;
 	}
 
-	return new ArrayList<>();
-    }
+	@Override
+	public RelaisTransfer off(Long relaisId) {
+		Relais relais = relaisRepository.findOne(relaisId);
 
-    private RelaisTransfer transform(Relais r) {
-	return new RelaisTransfer(r.getId(), r.getName(), StatusTransfer.valueOf(r.getStatus().name()));
-    }
+		if (relais != null) {
+			HttpEntity<String> request = new HttpEntity<String>(createAuth());
+			ResponseEntity<Object> responseEntity = heatingSystemHost.exchange(
+					heatingSystemHostUrl + "relais/" + relaisId + "/off", HttpMethod.POST, request, Object.class);
+
+			if (HttpStatus.OK == responseEntity.getStatusCode()) {
+				relais.setStatus(Status.OFF);
+
+				relais = relaisRepository.save(relais);
+				return transform(relais);
+			}
+		}
+
+		return null;
+	}
+
+	private HttpHeaders createAuth() {
+		String plainCreds = username + ":" + password;
+		byte[] plainCredsBytes = plainCreds.getBytes();
+		byte[] base64CredsBytes = Base64.encode(plainCredsBytes);
+		String base64Creds = new String(base64CredsBytes);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + base64Creds);
+		return headers;
+	}
+
+	private List<RelaisTransfer> transform(List<Relais> relais) {
+		if (relais != null) {
+			return relais.stream().map(r -> transform(r)).collect(Collectors.toList());
+		}
+
+		return new ArrayList<>();
+	}
+
+	private RelaisTransfer transform(Relais r) {
+		return new RelaisTransfer(r.getId(), r.getName(), StatusTransfer.valueOf(r.getStatus().name()));
+	}
 
 }
